@@ -10,14 +10,15 @@ export interface PostOptions {
 export interface PostDoc extends BaseDoc {
   author: ObjectId;
   content: string;
+  mediaLink: string;
   options?: PostOptions;
 }
 
 export default class PostConcept {
   public readonly posts = new DocCollection<PostDoc>("posts");
 
-  async create(author: ObjectId, content: string, options?: PostOptions) {
-    const _id = await this.posts.createOne({ author, content, options });
+  async create(author: ObjectId, content: string, mediaLink: string, options?: PostOptions) {
+    const _id = await this.posts.createOne({ author, content, mediaLink, options });
     return { msg: "Post successfully created!", post: await this.posts.readOne({ _id }) };
   }
 
@@ -26,6 +27,13 @@ export default class PostConcept {
       sort: { dateUpdated: -1 },
     });
     return posts;
+  }
+
+  /**
+   * Return Post with id if it exists, null otherwise
+   */
+  async getPost(_id: ObjectId) {
+    return await this.posts.readOne({ _id });
   }
 
   async getByAuthor(author: ObjectId) {
@@ -51,6 +59,14 @@ export default class PostConcept {
     if (post.author.toString() !== user.toString()) {
       throw new PostAuthorNotMatchError(user, _id);
     }
+  }
+
+  /**
+   * return true if post with _id exists, false otherwise
+   */
+  async postExists(_id: ObjectId) {
+    const post = await this.posts.readOne({ _id });
+    return post !== null;
   }
 
   private sanitizeUpdate(update: Partial<PostDoc>) {
