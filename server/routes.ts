@@ -226,6 +226,7 @@ class Routes {
     return await Like.didUserLike(postId, user, type);
   }
 
+  // create like on post with given id
   @Router.post("/likes/:_id")
   async createLike(session: WebSessionDoc, _id: ObjectId, type: LikeType) {
     const user = WebSession.getUser(session);
@@ -234,18 +235,24 @@ class Routes {
     return { msg: created.msg, like: await Responses.like(created.like) };
   }
 
+  // delete like on post with given id
   @Router.delete("/likes/:_id")
   async deleteLike(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);
-    await Like.isOwner(user, _id);
-    return await Like.delete(_id);
+    const post = (await Post.getPosts({ _id }))[0]._id;
+    const likeId = (await Like.getByOwnerPost(post, user))._id;
+    await Like.isOwner(user, likeId);
+    return await Like.delete(likeId);
   }
 
+  // update like on post with given id
   @Router.patch("/likes/:_id")
   async updateLike(session: WebSessionDoc, _id: ObjectId, type: LikeType) {
     const user = WebSession.getUser(session);
-    await Like.isOwner(user, _id);
-    return await Like.update(_id, type);
+    const post = (await Post.getPosts({ _id }))[0]._id;
+    const likeId = (await Like.getByOwnerPost(post, user))._id;
+    await Like.isOwner(user, likeId);
+    return await Like.update(likeId, type);
   }
 
   @Router.get("/tags")

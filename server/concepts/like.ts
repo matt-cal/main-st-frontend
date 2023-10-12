@@ -45,6 +45,11 @@ export default class LikeConcept {
     return await this.getLikes({ post, type });
   }
 
+  // return single like with given owner on given post
+  async getByOwnerPost(post: ObjectId, owner: ObjectId) {
+    return (await this.getLikes({ owner, post }))[0];
+  }
+
   /**
    * Return true if like (or dislike) exists on given post with given owner, false otherwise
    */
