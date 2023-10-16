@@ -45,6 +45,7 @@ async function likePost(type: string) {
 
 onBeforeMount(async () => {
   await getLikeCount();
+  await updateLikeStatus();
 });
 </script>
 
