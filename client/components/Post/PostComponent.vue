@@ -3,11 +3,15 @@ import LikeComponent from "@/components/Like/LikeComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import ModalComponent from "../Tag/ModalComponent.vue";
+import TagComponent from "../Tag/TagComponent.vue";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
+let postTags = ref<Array<string>>([]);
 
 const deletePost = async () => {
   try {
@@ -17,6 +21,10 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+onBeforeMount(async () => {
+  postTags.value = await fetchy(`api/posts/${props.post._id}/tags`, "GET");
+});
 </script>
 
 <template>
@@ -27,6 +35,11 @@ const deletePost = async () => {
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
       <li><LikeComponent :post="props.post._id" /></li>
+      <li>
+        <ModalComponent>
+          <TagComponent v-for="tagName in postTags" :key="tagName" :tagName="tagName" :editing="false"></TagComponent>
+        </ModalComponent>
+      </li>
     </menu>
     <article class="timestamp">
       <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>

@@ -266,6 +266,12 @@ class Routes {
     return tags;
   }
 
+  // use to see if tag exists
+  @Router.get("/tags/:tag")
+  async tagExists(tag: string) {
+    return await Tag.tagExists(tag);
+  }
+
   @Router.post("/tags")
   async createTag(name: string) {
     const created = await Tag.create(name);

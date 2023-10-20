@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import { formatDate } from "../../utils/formatDate";
+import EditTagsComponent from "../Tag/EditTagsComponent.vue";
 
 const props = defineProps(["post"]);
 const content = ref(props.post.content);
@@ -31,6 +32,7 @@ const editPost = async (content: string) => {
       <p v-else class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</p>
     </div>
   </form>
+  <EditTagsComponent :post="props.post" />
 </template>
 
 <style scoped>

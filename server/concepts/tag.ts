@@ -75,6 +75,14 @@ export default class TagConcept {
     return tag;
   }
 
+  /**
+   * returns true if tage with name exists, false otherwise
+   */
+  async tagExists(name: string) {
+    const tag = await this.tags.readOne({ name });
+    return tag !== null;
+  }
+
   private async isNameUnique(name: string) {
     if (await this.tags.readOne({ name })) {
       throw new NotAllowedError(`Tag with name ${name} already exists!`);
