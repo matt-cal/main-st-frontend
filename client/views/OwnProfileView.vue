@@ -2,6 +2,7 @@
 import PostListComponent from "@/components/Post/PostListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import FavoriteListComponent from "../components/Favorite/FavoriteListComponent.vue";
 import EditTagsComponent from "../components/Tag/EditTagsComponent.vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
@@ -10,6 +11,7 @@ const { currentUsername } = storeToRefs(useUserStore());
 <template>
   <main>
     <h1>{{ currentUsername }}</h1>
+    <FavoriteListComponent :username="currentUsername" />
     <div class="flex center">
       <EditTagsComponent :username="currentUsername" />
     </div>

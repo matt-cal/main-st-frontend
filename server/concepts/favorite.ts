@@ -14,6 +14,10 @@ export default class FavoriteConcept {
     if (owner.toString() == target.toString()) {
       throw new NotAllowedError("Cannot favorite your own account!");
     }
+    const oldFavorites = await this.getFavorites({ owner, target });
+    if (oldFavorites.length !== 0) {
+      throw new FavoriteExistsError(owner, target);
+    }
     const _id = await this.favorites.createOne({ owner, target });
     return { msg: "Favorited successfully!", favorite: await this.favorites.readOne({ _id }) };
   }
@@ -52,5 +56,14 @@ export class FavoriteOwnerNotMatchError extends NotAllowedError {
     public readonly _id: ObjectId,
   ) {
     super("{0} is not the owner of favorite {1}!", owner, _id);
+  }
+}
+
+export class FavoriteExistsError extends NotAllowedError {
+  constructor(
+    public readonly owner: ObjectId,
+    public readonly target: ObjectId,
+  ) {
+    super("{0} already favorited user {1}!", owner, target);
   }
 }

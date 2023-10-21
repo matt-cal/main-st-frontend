@@ -189,19 +189,30 @@ class Routes {
     return Responses.favorites(favorites);
   }
 
-  @Router.post("/favorites")
-  async createFavorite(session: WebSessionDoc, target: string) {
+  // check if current user has favorited given user
+  @Router.get("/favorites/:username")
+  async checkFavorite(session: WebSessionDoc, username: string) {
     const user = WebSession.getUser(session);
-    const targetId = (await User.getUserByUsername(target))._id;
+    const favorites = await Responses.favorites(await Favorite.getByOwner(user));
+    const usernames = favorites.map((f) => f.target);
+    return usernames.indexOf(username) > -1;
+  }
+
+  @Router.post("/favorites/:username")
+  async createFavorite(session: WebSessionDoc, username: string) {
+    const user = WebSession.getUser(session);
+    const targetId = (await User.getUserByUsername(username))._id;
     const created = await Favorite.create(user, targetId);
     return { msg: created.msg, favorite: await Responses.favorite(created.favorite) };
   }
 
-  @Router.delete("/favorites/:_id")
-  async deleteFavorite(session: WebSessionDoc, _id: ObjectId) {
+  @Router.delete("/favorites/:username")
+  async deleteFavorite(session: WebSessionDoc, username: string) {
     const user = WebSession.getUser(session);
-    await Favorite.isOwner(user, _id);
-    return await Favorite.delete(_id);
+    const targetId = (await User.getUserByUsername(username))._id;
+    const favoriteId = (await Favorite.getFavorites({ owner: user, target: targetId }))[0]._id;
+    await Favorite.isOwner(user, favoriteId);
+    return await Favorite.delete(favoriteId);
   }
 
   @Router.get("/user/:username/likes")
