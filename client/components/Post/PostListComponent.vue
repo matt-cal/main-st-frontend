@@ -14,13 +14,13 @@ const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 let searchAuthor = ref("");
-const props = defineProps(["own"]);
+const props = defineProps(["own", "username"]);
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
   let postResults;
   try {
-    postResults = await fetchy("api/posts", "GET", { query });
+    postResults = await fetchy("/api/posts", "GET", { query });
   } catch (_) {
     return;
   }
@@ -35,6 +35,8 @@ function updateEditing(id: string) {
 onBeforeMount(async () => {
   if (props.own) {
     await getPosts(currentUsername.value);
+  } else if (props.username) {
+    await getPosts(props.username);
   } else {
     await getPosts();
   }
@@ -43,14 +45,14 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
+  <section v-if="isLoggedIn && !props.own && !props.username">
     <h2>Create a post:</h2>
     <CreatePostForm @refreshPosts="getPosts" />
   </section>
   <div class="row">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm v-if="!props.own" @getPostsByAuthor="getPosts" />
+    <SearchPostForm v-if="!props.own && !props.username" @getPostsByAuthor="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">

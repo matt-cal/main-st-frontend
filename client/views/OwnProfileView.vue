@@ -5,9 +5,6 @@ import { storeToRefs } from "pinia";
 import EditTagsComponent from "../components/Tag/EditTagsComponent.vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
-const { updateSession } = useUserStore();
-
-void updateSession();
 </script>
 
 <template>

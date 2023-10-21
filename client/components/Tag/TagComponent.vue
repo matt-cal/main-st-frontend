@@ -5,9 +5,9 @@ const emit = defineEmits(["updateTags"]);
 
 const removeTag = async () => {
   if (props.post !== undefined) {
-    await fetchy(`api/posts/${props.post._id}/${props.tagName}`, "DELETE");
+    await fetchy(`/api/posts/${props.post._id}/${props.tagName}`, "DELETE");
   } else if (props.username !== undefined) {
-    await fetchy(`api/users/${props.tagName}`, "DELETE");
+    await fetchy(`/api/users/${props.tagName}`, "DELETE");
   }
   emit("updateTags");
 };

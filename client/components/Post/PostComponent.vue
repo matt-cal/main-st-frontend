@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { RouterLink } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import ModalComponent from "../Tag/ModalComponent.vue";
 import TagComponent from "../Tag/TagComponent.vue";
@@ -15,7 +16,7 @@ let postTags = ref<Array<string>>([]);
 
 const deletePost = async () => {
   try {
-    await fetchy(`api/posts/${props.post._id}`, "DELETE");
+    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
   } catch {
     return;
   }
@@ -23,12 +24,13 @@ const deletePost = async () => {
 };
 
 onBeforeMount(async () => {
-  postTags.value = await fetchy(`api/posts/${props.post._id}/tags`, "GET");
+  postTags.value = await fetchy(`/api/posts/${props.post._id}/tags`, "GET");
 });
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
+  <!-- <p class="author">{{ props.post.author }}</p> -->
+  <RouterLink class="author" :to="{ name: 'OtherProfile', params: { username: props.post.author } }">{{ props.post.author }}</RouterLink>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">

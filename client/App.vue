@@ -16,9 +16,7 @@ const { toast } = storeToRefs(useToastStore());
 onBeforeMount(async () => {
   try {
     await userStore.updateSession();
-    if (isLoggedIn) {
-      void router.push({ name: "Profile" });
-    }
+    void router.push({ name: "Home" });
   } catch {
     // User is not logged in
   }

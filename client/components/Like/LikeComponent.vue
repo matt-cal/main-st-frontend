@@ -13,8 +13,8 @@ async function getLikeCount() {
   let likes;
   let dislikes;
   try {
-    likes = await fetchy(`api/post/${props.post}/likes`, "GET", { query: { type: "like" } });
-    dislikes = await fetchy(`api/post/${props.post}/likes`, "GET", { query: { type: "dislike" } });
+    likes = await fetchy(`/api/post/${props.post}/likes`, "GET", { query: { type: "like" } });
+    dislikes = await fetchy(`/api/post/${props.post}/likes`, "GET", { query: { type: "dislike" } });
   } catch (_) {
     return;
   }
@@ -23,8 +23,8 @@ async function getLikeCount() {
 }
 
 async function updateLikeStatus() {
-  const liked: boolean = await fetchy(`api/user/liked/${props.post}`, "GET", { query: { type: "like" } });
-  const disliked: boolean = await fetchy(`api/user/liked/${props.post}`, "GET", { query: { type: "dislike" } });
+  const liked: boolean = await fetchy(`/api/user/liked/${props.post}`, "GET", { query: { type: "like" } });
+  const disliked: boolean = await fetchy(`/api/user/liked/${props.post}`, "GET", { query: { type: "dislike" } });
   userLiked.value = liked;
   userDisliked.value = disliked;
 }
@@ -32,11 +32,11 @@ async function updateLikeStatus() {
 async function likePost(type: string) {
   console.log(userLiked, userDisliked);
   if ((type === "like" && userLiked.value) || (type === "dislike" && userDisliked.value)) {
-    await fetchy(`api/likes/${props.post}`, "DELETE", { query: { type } });
+    await fetchy(`/api/likes/${props.post}`, "DELETE", { query: { type } });
   } else if (userLiked.value || userDisliked.value) {
-    await fetchy(`api/likes/${props.post}`, "PATCH", { query: { type } });
+    await fetchy(`/api/likes/${props.post}`, "PATCH", { query: { type } });
   } else {
-    await fetchy(`api/likes/${props.post}`, "POST", { query: { type } });
+    await fetchy(`/api/likes/${props.post}`, "POST", { query: { type } });
   }
   userLiked.value = type === "like" && !userLiked.value;
   userDisliked.value = type === "dislike" && !userDisliked.value;

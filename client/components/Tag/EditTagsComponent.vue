@@ -9,23 +9,23 @@ let newTag = ref("");
 
 const updateTags = async () => {
   if (props.post !== undefined) {
-    itemTags.value = await fetchy(`api/posts/${props.post._id}/tags`, "GET");
+    itemTags.value = await fetchy(`/api/posts/${props.post._id}/tags`, "GET");
   } else if (props.username !== undefined) {
-    itemTags.value = await fetchy(`api/users/${props.username}/tags`, "GET");
+    itemTags.value = await fetchy(`/api/users/${props.username}/tags`, "GET");
   }
 };
 
 const tagItem = async () => {
-  const tagExists = await fetchy(`api/tags/${newTag.value}`, "GET");
+  const tagExists = await fetchy(`/api/tags/${newTag.value}`, "GET");
   if (!tagExists) {
     // create tag if it doesn't exist already
-    await fetchy(`api/tags`, "POST", { body: { name: newTag.value } });
+    await fetchy(`/api/tags`, "POST", { body: { name: newTag.value } });
   }
   // add tag to item
   if (props.post !== undefined) {
-    await fetchy(`api/posts/${props.post._id}/${newTag.value}`, "PATCH");
+    await fetchy(`/api/posts/${props.post._id}/${newTag.value}`, "PATCH");
   } else if (props.username !== undefined) {
-    await fetchy(`api/users/${newTag.value}`, "PATCH");
+    await fetchy(`/api/users/${newTag.value}`, "PATCH");
   }
   await updateTags();
   newTag.value = "";
