@@ -8,12 +8,13 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
 let searchAuthor = ref("");
+const props = defineProps(["own"]);
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -32,7 +33,11 @@ function updateEditing(id: string) {
 }
 
 onBeforeMount(async () => {
-  await getPosts();
+  if (props.own) {
+    await getPosts(currentUsername.value);
+  } else {
+    await getPosts();
+  }
   loaded.value = true;
 });
 </script>
@@ -45,7 +50,7 @@ onBeforeMount(async () => {
   <div class="row">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getPosts" />
+    <SearchPostForm v-if="!props.own" @getPostsByAuthor="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">

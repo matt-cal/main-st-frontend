@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import OwnProfileView from "../views/OwnProfileView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -32,6 +33,12 @@ const router = createRouter({
           return { name: "Settings" };
         }
       },
+    },
+    {
+      path: "/Profile",
+      name: "Profile",
+      component: OwnProfileView,
+      meta: { requiresAuth: true },
     },
     {
       path: "/:catchAll(.*)",
