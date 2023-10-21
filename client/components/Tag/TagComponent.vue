@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { fetchy } from "@/utils/fetchy";
-const props = defineProps(["tagName", "editing", "post"]);
+const props = defineProps(["tagName", "editing", "post", "username"]);
 const emit = defineEmits(["updateTags"]);
 
 const removeTag = async () => {
-  await fetchy(`api/posts/${props.post._id}/${props.tagName}`, "DELETE");
+  if (props.post !== undefined) {
+    await fetchy(`api/posts/${props.post._id}/${props.tagName}`, "DELETE");
+  } else if (props.username !== undefined) {
+    await fetchy(`api/users/${props.tagName}`, "DELETE");
+  }
   emit("updateTags");
 };
 </script>
