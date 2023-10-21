@@ -3,8 +3,9 @@ import router from "@/router";
 import { storeToRefs } from "pinia";
 import { onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { useUserStore } from "../../stores/user";
-import PostListComponent from "../Post/PostListComponent.vue";
+import PostListComponent from "../components/Post/PostListComponent.vue";
+import TagListComponent from "../components/Tag/TagListComponent.vue";
+import { useUserStore } from "../stores/user";
 
 const { currentUsername } = storeToRefs(useUserStore());
 const currentRoute = useRoute();
@@ -19,6 +20,7 @@ onBeforeMount(async () => {
 <template>
   <main>
     <h1>{{ currentRoute.params.username }}</h1>
+    <TagListComponent :username="currentRoute.params.username" />
     <PostListComponent :username="currentRoute.params.username" />
   </main>
 </template>

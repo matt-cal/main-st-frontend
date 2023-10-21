@@ -5,7 +5,7 @@ let visible = ref(false);
 </script>
 
 <template>
-  <ButtonComponent class="button" label="Show" @click="visible = true" />
+  <ButtonComponent class="button" label="See All..." @click="visible = true" />
 
   <Dialog v-model:visible="visible" modal header="Tags" :style="{ width: '50vw' }">
     <slot> No Tags </slot>
