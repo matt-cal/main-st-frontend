@@ -7,17 +7,24 @@ const favorited = ref(false);
 
 const updateFavorite = async () => {
   favorited.value = await fetchy(`/api/favorites/${props.username}`, "GET");
-  console.log(favorited.value);
 };
 
 const favorite = async () => {
-  await fetchy(`/api/favorites/${props.username}`, "POST");
-  await updateFavorite();
+  try {
+    await fetchy(`/api/favorites/${props.username}`, "POST");
+    favorited.value = true;
+  } catch {
+    return;
+  }
 };
 
 const unfavorite = async () => {
-  await fetchy(`/api/favorites/${props.username}`, "DELETE");
-  await updateFavorite();
+  try {
+    await fetchy(`/api/favorites/${props.username}`, "DELETE");
+    favorited.value = false;
+  } catch {
+    return;
+  }
 };
 
 onBeforeMount(async () => {

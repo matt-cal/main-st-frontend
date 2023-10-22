@@ -130,10 +130,33 @@ class Routes {
     return Post.delete(_id);
   }
 
-  @Router.get("/friends")
-  async getFriends(session: WebSessionDoc) {
-    const user = WebSession.getUser(session);
+  // get users that given user is following
+  @Router.get("/friends/:username")
+  async getFriends(username: string) {
+    const user = (await User.getUserByUsername(username))._id;
     return await User.idsToUsernames(await Friend.getFriends(user));
+  }
+
+  // get users that are following given user
+  @Router.get("/users/:username/followers")
+  async getFollowers(username: string) {
+    const user = (await User.getUserByUsername(username))._id;
+    return await User.idsToUsernames(await Friend.getFollowers(user));
+  }
+
+  // return true if current user is following given user
+  @Router.get("/following/:username")
+  async isFollowing(session: WebSessionDoc, username: string) {
+    const user = WebSession.getUser(session);
+    const target = (await User.getUserByUsername(username))._id;
+    return await Friend.checkFriends(user, target);
+  }
+
+  @Router.post("/friends/:username")
+  async follow(session: WebSessionDoc, username: string) {
+    const user = WebSession.getUser(session);
+    const friendId = (await User.getUserByUsername(username))._id;
+    return await Friend.addFriend(user, friendId);
   }
 
   @Router.delete("/friends/:friend")
@@ -141,40 +164,6 @@ class Routes {
     const user = WebSession.getUser(session);
     const friendId = (await User.getUserByUsername(friend))._id;
     return await Friend.removeFriend(user, friendId);
-  }
-
-  @Router.get("/friend/requests")
-  async getRequests(session: WebSessionDoc) {
-    const user = WebSession.getUser(session);
-    return await Responses.friendRequests(await Friend.getRequests(user));
-  }
-
-  @Router.post("/friend/requests/:to")
-  async sendFriendRequest(session: WebSessionDoc, to: string) {
-    const user = WebSession.getUser(session);
-    const toId = (await User.getUserByUsername(to))._id;
-    return await Friend.sendRequest(user, toId);
-  }
-
-  @Router.delete("/friend/requests/:to")
-  async removeFriendRequest(session: WebSessionDoc, to: string) {
-    const user = WebSession.getUser(session);
-    const toId = (await User.getUserByUsername(to))._id;
-    return await Friend.removeRequest(user, toId);
-  }
-
-  @Router.put("/friend/accept/:from")
-  async acceptFriendRequest(session: WebSessionDoc, from: string) {
-    const user = WebSession.getUser(session);
-    const fromId = (await User.getUserByUsername(from))._id;
-    return await Friend.acceptRequest(fromId, user);
-  }
-
-  @Router.put("/friend/reject/:from")
-  async rejectFriendRequest(session: WebSessionDoc, from: string) {
-    const user = WebSession.getUser(session);
-    const fromId = (await User.getUserByUsername(from))._id;
-    return await Friend.rejectRequest(fromId, user);
   }
 
   @Router.get("/favorites")

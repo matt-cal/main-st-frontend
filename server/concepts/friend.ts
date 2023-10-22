@@ -3,8 +3,8 @@ import DocCollection, { BaseDoc } from "../framework/doc";
 import { NotAllowedError, NotFoundError } from "./errors";
 
 export interface FriendshipDoc extends BaseDoc {
-  user1: ObjectId;
-  user2: ObjectId;
+  owner: ObjectId;
+  target: ObjectId;
 }
 
 export interface FriendRequestDoc extends BaseDoc {
@@ -17,79 +17,56 @@ export default class FriendConcept {
   public readonly friends = new DocCollection<FriendshipDoc>("friends");
   public readonly requests = new DocCollection<FriendRequestDoc>("friendRequests");
 
-  async getRequests(user: ObjectId) {
-    return await this.requests.readMany({
-      $or: [{ from: user }, { to: user }],
-    });
-  }
-
-  async sendRequest(from: ObjectId, to: ObjectId) {
-    await this.canSendRequest(from, to);
-    await this.requests.createOne({ from, to, status: "pending" });
-    return { msg: "Sent request!" };
-  }
-
-  async acceptRequest(from: ObjectId, to: ObjectId) {
-    await this.removePendingRequest(from, to);
-    // Following two can be done in parallel, thus we use `void`
-    void this.requests.createOne({ from, to, status: "accepted" });
-    void this.addFriend(from, to);
-    return { msg: "Accepted request!" };
-  }
-
-  async rejectRequest(from: ObjectId, to: ObjectId) {
-    await this.removePendingRequest(from, to);
-    await this.requests.createOne({ from, to, status: "rejected" });
-    return { msg: "Rejected request!" };
-  }
-
-  async removeRequest(from: ObjectId, to: ObjectId) {
-    await this.removePendingRequest(from, to);
-    return { msg: "Removed request!" };
-  }
-
-  async removeFriend(user: ObjectId, friend: ObjectId) {
+  async removeFriend(owner: ObjectId, target: ObjectId) {
     const friendship = await this.friends.popOne({
-      $or: [
-        { user1: user, user2: friend },
-        { user1: friend, user2: user },
-      ],
+      owner,
+      target,
     });
     if (friendship === null) {
-      throw new FriendNotFoundError(user, friend);
+      throw new FriendNotFoundError(owner, target);
     }
     return { msg: "Unfriended!" };
   }
 
   async getFriends(user: ObjectId) {
     const friendships = await this.friends.readMany({
-      $or: [{ user1: user }, { user2: user }],
+      owner: user,
     });
-    // Making sure to compare ObjectId using toString()
-    return friendships.map((friendship) => (friendship.user1.toString() === user.toString() ? friendship.user2 : friendship.user1));
+    return friendships.map((friendship) => friendship.target);
   }
 
-  private async addFriend(user1: ObjectId, user2: ObjectId) {
-    void this.friends.createOne({ user1, user2 });
+  async getFollowers(user: ObjectId) {
+    const followers = await this.friends.readMany({ target: user });
+    return followers.map((f) => f.owner);
   }
 
-  private async removePendingRequest(from: ObjectId, to: ObjectId) {
-    const request = await this.requests.popOne({ from, to, status: "pending" });
-    if (request === null) {
-      throw new FriendRequestNotFoundError(from, to);
-    }
-    return request;
+  async addFriend(owner: ObjectId, target: ObjectId) {
+    await this.isNotFriends(owner, target);
+    await this.friends.createOne({ owner, target });
+    return { msg: "Followed Successfully!" };
   }
 
-  private async isNotFriends(u1: ObjectId, u2: ObjectId) {
+  /**
+   * return true if owner is following target, false otherwise
+   */
+  async checkFriends(owner: ObjectId, target: ObjectId) {
     const friendship = await this.friends.readOne({
-      $or: [
-        { user1: u1, user2: u2 },
-        { user1: u2, user2: u1 },
-      ],
+      owner,
+      target,
     });
-    if (friendship !== null || u1.toString() === u2.toString()) {
-      throw new AlreadyFriendsError(u1, u2);
+    return friendship !== null;
+  }
+
+  /**
+   * assert owner is not following target already
+   */
+  private async isNotFriends(owner: ObjectId, target: ObjectId) {
+    const friendship = await this.friends.readOne({
+      owner,
+      target,
+    });
+    if (friendship !== null || owner.toString() === target.toString()) {
+      throw new AlreadyFriendsError(owner, target);
     }
   }
 
@@ -130,7 +107,7 @@ export class FriendNotFoundError extends NotFoundError {
     public readonly user1: ObjectId,
     public readonly user2: ObjectId,
   ) {
-    super("Friendship between {0} and {1} does not exist!", user1, user2);
+    super("{0} is not following {1}!", user1, user2);
   }
 }
 
@@ -139,6 +116,6 @@ export class AlreadyFriendsError extends NotAllowedError {
     public readonly user1: ObjectId,
     public readonly user2: ObjectId,
   ) {
-    super("{0} and {1} are already friends!", user1, user2);
+    super("{0} is already following {1}!", user1, user2);
   }
 }
