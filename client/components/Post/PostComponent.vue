@@ -30,6 +30,9 @@ onBeforeMount(async () => {
 <template>
   <!-- <p class="author">{{ props.post.author }}</p> -->
   <RouterLink class="author" :to="{ name: 'OtherProfile', params: { username: props.post.author } }">{{ props.post.author }}</RouterLink>
+  <div>
+    <img v-bind:src="props.post.mediaLink" style="height: 500px" />
+  </div>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
