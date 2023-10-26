@@ -22,13 +22,22 @@ const removeTag = async () => {
 
 <style scoped>
 .base {
-  margin: 4px;
-  border: solid;
+  margin-right: 4px;
+  padding: 0.25em;
+  border: 0.5px solid;
+  border-radius: 4px;
+  background-color: #9f4142;
+  color: white;
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 
 button {
   border: none;
   margin: 4px;
   cursor: pointer;
+  background-color: #9f4142;
+  color: white;
 }
 </style>

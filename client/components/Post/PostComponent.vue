@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import LikeComponent from "@/components/Like/LikeComponent.vue";
 import { useUserStore } from "@/stores/user";
-import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { RouterLink } from "vue-router";
@@ -28,29 +27,30 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <!-- <p class="author">{{ props.post.author }}</p> -->
-  <RouterLink class="author" :to="{ name: 'OtherProfile', params: { username: props.post.author } }">{{ props.post.author }}</RouterLink>
-  <div>
-    <img v-bind:src="props.post.mediaLink" style="height: 500px" />
-  </div>
-  <p>{{ props.post.content }}</p>
-  <div class="base">
+  <div class="top-post">
+    <RouterLink class="author" :to="{ name: 'OtherProfile', params: { username: props.post.author } }">{{ props.post.author }}</RouterLink>
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
     </menu>
+  </div>
+  <div class="img-container">
+    <img v-bind:src="props.post.mediaLink" />
+  </div>
+  <p>{{ props.post.content }}</p>
+  <div class="base">
     <LikeComponent :post="props.post._id" />
     <TagListComponent :post="props.post" />
-    <article class="timestamp">
-      <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
-    </article>
   </div>
 </template>
 
 <style scoped>
 p {
   margin: 0em;
+}
+
+a {
+  color: black;
 }
 
 .author {
@@ -67,17 +67,29 @@ menu {
   margin: 0;
 }
 
-.timestamp {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.9em;
-  font-style: italic;
-}
-
 .base {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.top-post {
+  display: flex;
+  justify-content: space-between;
+}
+
+.img-container {
+  height: 550px;
+  width: 800px;
+  border: 0.5px solid lightgray;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .base article:only-child {

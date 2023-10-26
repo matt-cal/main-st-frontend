@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CreatePostForm from "@/components/Post/CreatePostForm.vue";
 import EditPostForm from "@/components/Post/EditPostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
@@ -25,7 +24,7 @@ async function getPosts(author?: string) {
     return;
   }
   searchAuthor.value = author ? author : "";
-  posts.value = postResults;
+  posts.value = postResults.filter((p: any) => p.author !== "DELETED_USER");
 }
 
 function updateEditing(id: string) {
@@ -45,23 +44,23 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn && !props.own && !props.username">
-    <h2>Create a post:</h2>
-    <CreatePostForm @refreshPosts="getPosts" />
-  </section>
-  <div class="row">
-    <h2 v-if="!searchAuthor">Posts:</h2>
-    <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm v-if="!props.own && !props.username" @getPostsByAuthor="getPosts" />
+  <div class="search-out">
+    <div class="search-in">
+      <h2 v-if="searchAuthor">Posts by {{ searchAuthor }}:</h2>
+      <SearchPostForm v-if="!props.own && !props.username" @getPostsByAuthor="getPosts" />
+    </div>
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
       <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <hr color="#9f4142" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>
-  <p v-else>Loading...</p>
+  <div v-else class="loading">
+    <h1>Loading...</h1>
+  </div>
 </template>
 
 <style scoped>
@@ -69,6 +68,13 @@ section {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+.loading {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 section,
@@ -79,16 +85,24 @@ p,
 }
 
 article {
-  background-color: var(--base-bg);
+  /* background-color: var(--base-bg); */
   border-radius: 1em;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding: 1em;
+  padding: 1em 0;
+  width: 800px;
+}
+
+hr {
+  margin-top: 24px;
 }
 
 .posts {
   padding: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .row {
@@ -96,5 +110,11 @@ article {
   justify-content: space-between;
   margin: 0 auto;
   max-width: 60em;
+}
+
+.search-out {
+  margin: 0 auto;
+  /* max-width: 60em; */
+  width: 800px;
 }
 </style>

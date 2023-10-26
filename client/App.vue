@@ -27,9 +27,9 @@ onBeforeMount(async () => {
   <header>
     <nav>
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
+        <!-- <img src="@/assets/images/logo.svg" /> -->
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1 id="nav-title">Main St</h1>
         </RouterLink>
       </div>
       <ul>
@@ -37,6 +37,7 @@ onBeforeMount(async () => {
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'CreatePost' }" :class="{ underline: currentRouteName == 'CreatePost' }" style="margin-right: 12px"> New Post </RouterLink>
           <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }" style="margin-right: 12px"> Settings </RouterLink>
           <RouterLink :to="{ name: 'Profile' }" :class="{ underline: currentRouteName == 'Profile' }" style="margin-right: 12px"> Profile </RouterLink>
         </li>
@@ -57,7 +58,8 @@ onBeforeMount(async () => {
 
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: #9f4142;
+  color: antiquewhite;
   display: flex;
   align-items: center;
 }
@@ -65,6 +67,9 @@ nav {
 h1 {
   font-size: 2em;
   margin: 0;
+}
+
+#nav-title {
 }
 
 .title {
@@ -79,7 +84,7 @@ img {
 
 a {
   font-size: large;
-  color: black;
+  color: antiquewhite;
   text-decoration: none;
 }
 
@@ -90,6 +95,7 @@ ul {
   align-items: center;
   flex-direction: row;
   gap: 1em;
+  font-weight: 500;
 }
 
 .underline {

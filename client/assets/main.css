@@ -3,6 +3,19 @@
 :root {
   --red: rgb(208, 67, 12);
   --base-bg: #f1f3f5;
+  --brick-red: #9f4142;
+}
+
+body {
+  font-family: "kohinoor-odia", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+h1 {
+  font-family: "tiller", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
 
 button.btn-small {
@@ -11,7 +24,7 @@ button.btn-small {
 
 button.button-error {
   color: white;
-  background: var(--red);
+  background: #9f4142;
 }
 
 a.button {

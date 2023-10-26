@@ -22,4 +22,22 @@ form {
   padding: 1em;
   align-items: center;
 }
+
+legend {
+  color: #9f4142;
+}
+
+input,
+button {
+  height: 40px;
+}
+
+button {
+  background-color: #9f4142;
+  border-radius: 0 20px 20px 0;
+}
+
+#author {
+  border-radius: 20px 0 0 20px;
+}
 </style>

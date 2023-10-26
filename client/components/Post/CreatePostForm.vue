@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import router from "@/router";
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const content = ref("");
 const mediaLink = ref("");
-const emit = defineEmits(["refreshPosts"]);
+const emit = defineEmits(["refreshPosts", "submitted"]);
 const newTag = ref("");
 const tags = ref<string[]>([]);
 
 const createPost = async (content: string, mediaLink: string) => {
+  emit("submitted");
   try {
     const res = await fetchy("/api/posts", "POST", {
       body: { content, mediaLink },
@@ -26,8 +28,8 @@ const createPost = async (content: string, mediaLink: string) => {
   } catch (_) {
     return;
   }
-  emit("refreshPosts");
   emptyForm();
+  void router.push({ name: "Home" });
 };
 
 const addTag = async () => {
@@ -54,14 +56,17 @@ const emptyForm = () => {
   <form @submit.prevent="createPost(content, mediaLink)">
     <label for="content">Post Contents:</label>
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
-    <input id="mediaLink" v-model="mediaLink" placeholder="Add link to image or video" required />
-    <form @submit.prevent="addTag()">
+    <label for="mediaLink">Image:</label>
+    <input id="mediaLink" v-model="mediaLink" placeholder="Add image link" required />
+    <form class="tag-form" @submit.prevent="addTag()">
       <input v-model="newTag" placeholder="Add Tag" required />
-      <button class="btn-small pure-button-primary pure-button" type="submit">Add Tag</button>
+      <button class="tag-submit btn-small pure-button-primary pure-button" type="submit">Add Tag</button>
     </form>
-    <div v-for="tag in tags" :key="tag" class="base">
-      <p>{{ tag }}</p>
-      <button @click="removeTag(tag)">x</button>
+    <div class="main">
+      <div v-for="tag in tags" :key="tag" class="base">
+        <p>{{ tag }}</p>
+        <button @click="removeTag(tag)">x</button>
+      </div>
     </div>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>
@@ -69,12 +74,21 @@ const emptyForm = () => {
 
 <style scoped>
 form {
-  background-color: var(--base-bg);
+  background-color: white;
   border-radius: 1em;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
+}
+
+.tag-form {
+  margin: 12px 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 textarea {
@@ -84,5 +98,39 @@ textarea {
   padding: 0.5em;
   border-radius: 4px;
   resize: none;
+}
+
+button {
+  background-color: #9f4142;
+  color: white;
+}
+
+.tag-submit,
+.tag-form input {
+  width: 150px;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.base {
+  margin-right: 4px;
+  padding: 0.25em;
+  border: 0.5px solid;
+  border-radius: 4px;
+  background-color: #9f4142;
+  color: white;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.base button {
+  border: none;
+  margin: 4px;
+  cursor: pointer;
 }
 </style>

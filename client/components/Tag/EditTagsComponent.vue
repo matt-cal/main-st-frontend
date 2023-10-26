@@ -37,9 +37,65 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <TagComponent v-for="tagName in itemTags" :key="tagName" :tagName="tagName" :post="props.post" :username="props.username" :editing="true" @updateTags="updateTags" />
-  <form @submit.prevent="tagItem()">
-    <textarea v-model="newTag" placeholder="Add Tag" required></textarea>
-    <button class="btn-small pure-button-primary pure-button" type="submit">Add Tag</button>
-  </form>
+  <div class="out">
+    <div class="form-contain">
+      <form class="tag-form" @submit.prevent="tagItem()">
+        <input v-model="newTag" placeholder="Add Tag" required />
+        <button class="tag-submit btn-small pure-button-primary pure-button" type="submit">Add Tag</button>
+      </form>
+    </div>
+    <div class="main">
+      <TagComponent v-for="tagName in itemTags" :key="tagName" :tagName="tagName" :post="props.post" :username="props.username" :editing="true" @updateTags="updateTags" />
+    </div>
+  </div>
 </template>
+
+<style scoped>
+button {
+  background-color: #9f4142;
+  color: white;
+}
+
+.out {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.form-contain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 1em;
+}
+
+form {
+  background-color: white;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 1em;
+}
+
+.tag-form {
+  margin: 12px 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tag-submit,
+.tag-form input {
+  width: 150px;
+}
+</style>

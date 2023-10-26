@@ -51,9 +51,28 @@ onBeforeMount(async () => {
 
 <template>
   <menu>
-    <div>{{ likeCount }}</div>
-    <button class="btn-small pure-button" @click="likePost('like')">Like</button>
-    <button class="btn-small pure-button" @click="likePost('dislike')">Dislike</button>
-    <div>{{ dislikeCount }}</div>
+    <p>{{ likeCount }}</p>
+    <button class="btn-small pure-button like" @click="likePost('like')"><img class="like" src="../../assets/images/like.png" /></button>
+    <button class="btn-small pure-button dislike" @click="likePost('dislike')"><img class="dislike" src="../../assets/images/dislike.png" /></button>
+    <p>{{ dislikeCount }}</p>
   </menu>
 </template>
+
+<style scoped>
+button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
+img {
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+}
+
+menu {
+  display: flex;
+  align-items: center;
+}
+</style>

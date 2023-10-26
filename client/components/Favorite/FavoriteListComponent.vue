@@ -14,8 +14,17 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div v-for="user in favorites" :key="user">
+  <div class="contain1" v-for="user in favorites" :key="user">
+    <h3>Favorites:</h3>
     <RouterLink v-if="user === currentUsername" :to="{ name: 'Profile' }">{{ user }}</RouterLink>
     <RouterLink v-else :to="{ name: 'OtherProfile', params: { username: user } }">{{ user }}</RouterLink>
   </div>
 </template>
+
+<style scoped>
+.contain1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+</style>
