@@ -41,12 +41,32 @@ onBeforeMount(async () => {
 <template>
   <button v-if="following" class="active" @click="unfollow">unfollow</button>
   <button v-else @click="follow">follow</button>
-  <p>Followers: {{ numFollowers }}</p>
-  <p>Following: {{ numFollowing }}</p>
+  <div class="counts">
+    <h3>Followers: {{ numFollowers }}</h3>
+    <h3>Following: {{ numFollowing }}</h3>
+  </div>
 </template>
 
 <style scoped>
 .active {
-  background-color: gold;
+  background-color: #9f4142;
+  color: white;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  padding: 0.25em;
+  border: 0.5px solid;
+  border-radius: 4px;
+  height: 32px;
+  width: 75px;
+}
+
+.counts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 </style>

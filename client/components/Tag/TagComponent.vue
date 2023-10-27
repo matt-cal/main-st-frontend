@@ -31,6 +31,7 @@ const removeTag = async () => {
   display: flex;
   gap: 4px;
   align-items: center;
+  height: 32px;
 }
 
 button {

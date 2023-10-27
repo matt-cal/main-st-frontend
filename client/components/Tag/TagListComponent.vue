@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-import TagComponent from "./TagComponent.vue";
 import ModalComponent from "./ModalComponent.vue";
+import TagComponent from "./TagComponent.vue";
 
 const props = defineProps(["post", "username", "editing"]);
 let tags = ref([]);
@@ -37,6 +37,8 @@ onBeforeMount(async () => {
 .main {
   display: flex;
   gap: 4px;
+  height: 32px;
+  align-items: center;
 }
 
 section {

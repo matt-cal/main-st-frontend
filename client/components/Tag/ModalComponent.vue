@@ -21,6 +21,7 @@ let visible = ref(false);
   border-radius: 4px;
   background-color: #9f4142;
   color: white;
+  height: 32px;
 }
 
 .myd :deep(.p-dialog .p-dialog-header) {

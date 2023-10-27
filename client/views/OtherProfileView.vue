@@ -22,10 +22,16 @@ onBeforeMount(async () => {
 
 <template>
   <main>
-    <h1>{{ currentRoute.params.username }}</h1>
-    <FavoriteListComponent :username="currentRoute.params.username" />
-    <FavoriteComponent :username="currentRoute.params.username" />
-    <FollowComponent :username="currentRoute.params.username" />
+    <div class="contain1">
+      <h1>{{ currentRoute.params.username }}</h1>
+      <FavoriteComponent :username="currentRoute.params.username" />
+    </div>
+    <div class="outer">
+      <div class="favorites">
+        <FavoriteListComponent :username="currentRoute.params.username" />
+      </div>
+      <FollowComponent :username="currentRoute.params.username" />
+    </div>
     <TagListComponent :username="currentRoute.params.username" />
     <PostListComponent :username="currentRoute.params.username" />
   </main>
@@ -34,6 +40,24 @@ onBeforeMount(async () => {
 <style scoped>
 h1 {
   text-align: center;
+}
+
+.contain1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.outer {
+  display: flex;
+  justify-content: center;
+  gap: 177px;
+}
+
+.favorites {
+  display: flex;
+  justify-content: center;
 }
 
 .flex {
