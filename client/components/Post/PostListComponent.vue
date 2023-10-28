@@ -11,9 +11,12 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
+let followingPosts = ref<Array<Record<string, string>>>([]);
+let followingUsers: string[] = [];
+let allPosts = ref(true);
 let editing = ref("");
 let searchAuthor = ref("");
-const props = defineProps(["own", "username"]);
+const props = defineProps(["own", "username", "home"]);
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -24,7 +27,9 @@ async function getPosts(author?: string) {
     return;
   }
   searchAuthor.value = author ? author : "";
+  postResults = postResults.filter((p: any) => p.author !== "DELETED_USER");
   posts.value = postResults.filter((p: any) => p.author !== "DELETED_USER");
+  followingPosts.value = postResults.filter((p: any) => followingUsers.indexOf(p.author) !== -1);
 }
 
 function updateEditing(id: string) {
@@ -32,6 +37,9 @@ function updateEditing(id: string) {
 }
 
 onBeforeMount(async () => {
+  if (currentUsername.value !== "") {
+    followingUsers = await fetchy(`/api/friends/${currentUsername.value}`, "GET");
+  }
   if (props.own) {
     await getPosts(currentUsername.value);
   } else if (props.username) {
@@ -44,18 +52,33 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <div class="buttons">
+    <button v-if="props.home && searchAuthor === ''" :class="{ underline: allPosts }" class="post-button" @click="() => (allPosts = true)">All Posts</button>
+    <button v-if="props.home && searchAuthor === '' && isLoggedIn" :class="{ underline: !allPosts }" class="post-button" @click="() => (allPosts = false)">Following</button>
+  </div>
+
   <div class="search-out">
-    <div class="search-in">
+    <div v-if="allPosts" class="search-in">
       <h2 v-if="searchAuthor">Posts by {{ searchAuthor }}:</h2>
       <SearchPostForm v-if="!props.own && !props.username" @getPostsByAuthor="getPosts" />
     </div>
   </div>
+
   <section class="posts" v-if="loaded && posts.length !== 0">
-    <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <hr color="#9f4142" />
-    </article>
+    <div v-if="allPosts">
+      <article v-for="post in posts" :key="post._id">
+        <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <hr color="#1c5753" />
+      </article>
+    </div>
+    <div v-else>
+      <article v-for="post in followingPosts" :key="post._id">
+        <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <hr color="#1c5753" />
+      </article>
+    </div>
   </section>
   <p v-else-if="loaded">No posts found</p>
   <div v-else class="loading">
@@ -68,6 +91,28 @@ section {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+.buttons {
+  height: 24px;
+  margin-top: 80px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.post-button {
+  border: none;
+  background-color: white;
+  color: #1c5753;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 .loading {
@@ -116,5 +161,6 @@ hr {
   margin: 0 auto;
   /* max-width: 60em; */
   width: 800px;
+  height: 123.2px;
 }
 </style>

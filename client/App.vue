@@ -70,6 +70,7 @@ nav {
   top: 0; /* top left corner should start at topmost spot */
   width: 100vw; /* take up the full browser width */
   z-index: 200;
+  box-shadow: 0 4px 2px -2px rgb(151, 151, 151);
 }
 
 h1 {
@@ -77,7 +78,8 @@ h1 {
   margin: 0;
 }
 
-#nav-title {
+.toast {
+  margin-top: 73.4px;
 }
 
 .title {

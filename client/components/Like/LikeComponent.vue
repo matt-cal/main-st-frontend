@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
+const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const props = defineProps(["post", "type"]);
 const emit = defineEmits(["likePost"]);
 let likeCount = ref(0);
@@ -30,7 +34,11 @@ async function updateLikeStatus() {
 }
 
 async function likePost(type: string) {
-  console.log(userLiked, userDisliked);
+  if (currentUsername.value === "") {
+    useToastStore().showToast({ message: "Please login!", style: "error" });
+    return;
+  }
+
   if ((type === "like" && userLiked.value) || (type === "dislike" && userDisliked.value)) {
     await fetchy(`/api/likes/${props.post}`, "DELETE", { query: { type } });
   } else if (userLiked.value || userDisliked.value) {

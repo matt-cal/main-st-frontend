@@ -52,7 +52,7 @@ onBeforeMount(async () => {
 
 <style scoped>
 button {
-  background-color: #9f4142;
+  background-color: #1c5753;
   color: white;
 }
 

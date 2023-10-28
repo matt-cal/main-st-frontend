@@ -26,7 +26,7 @@ const removeTag = async () => {
   padding: 0.25em;
   border: 0.5px solid;
   border-radius: 4px;
-  background-color: #9f4142;
+  background-color: #1c5753;
   color: white;
   display: flex;
   gap: 4px;
@@ -38,7 +38,7 @@ button {
   border: none;
   margin: 4px;
   cursor: pointer;
-  background-color: #9f4142;
+  background-color: #1c5753;
   color: white;
 }
 </style>

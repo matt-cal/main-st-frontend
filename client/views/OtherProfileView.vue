@@ -33,6 +33,7 @@ onBeforeMount(async () => {
       <FollowComponent :username="currentRoute.params.username" />
     </div>
     <TagListComponent :username="currentRoute.params.username" />
+    <hr color="#1c5753" />
     <PostListComponent :username="currentRoute.params.username" />
   </main>
 </template>
@@ -40,6 +41,10 @@ onBeforeMount(async () => {
 <style scoped>
 h1 {
   text-align: center;
+}
+
+hr {
+  margin: 48px 0;
 }
 
 .contain1 {

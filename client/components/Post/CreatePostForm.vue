@@ -101,7 +101,7 @@ textarea {
 }
 
 button {
-  background-color: #9f4142;
+  background-color: #1c5753;
   color: white;
 }
 
@@ -121,7 +121,7 @@ button {
   padding: 0.25em;
   border: 0.5px solid;
   border-radius: 4px;
-  background-color: #9f4142;
+  background-color: #1c5753;
   color: white;
   display: flex;
   gap: 4px;

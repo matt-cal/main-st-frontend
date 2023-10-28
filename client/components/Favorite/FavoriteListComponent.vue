@@ -14,10 +14,12 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="contain1" v-for="user in favorites" :key="user">
+  <div class="contain1">
     <h3>Favorites:</h3>
-    <RouterLink v-if="user === currentUsername" :to="{ name: 'Profile' }">{{ user }}</RouterLink>
-    <RouterLink v-else :to="{ name: 'OtherProfile', params: { username: user } }">{{ user }}</RouterLink>
+    <div v-for="user in favorites" :key="user">
+      <RouterLink v-if="user === currentUsername" class="user" :to="{ name: 'Profile' }">{{ user }}</RouterLink>
+      <RouterLink v-else class="user" :to="{ name: 'OtherProfile', params: { username: user } }">{{ user }}</RouterLink>
+    </div>
   </div>
 </template>
 
@@ -26,5 +28,10 @@ onBeforeMount(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.user {
+  color: #1c5753;
+  font-weight: bold;
 }
 </style>

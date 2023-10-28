@@ -30,7 +30,7 @@ onBeforeMount(async () => {
   <div class="top-post">
     <RouterLink class="author" :to="{ name: 'OtherProfile', params: { username: props.post.author } }">{{ props.post.author }}</RouterLink>
     <menu v-if="props.post.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
+      <li><button class="edit btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
     </menu>
   </div>
@@ -47,6 +47,11 @@ onBeforeMount(async () => {
 <style scoped>
 p {
   margin: 0em;
+}
+
+.edit {
+  background-color: #1c5753;
+  color: white;
 }
 
 a {
@@ -79,10 +84,10 @@ menu {
 }
 
 .img-container {
-  height: 550px;
+  height: 480px;
   width: 800px;
   border: 0.5px solid lightgray;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-bottom: 8px;
 }
 

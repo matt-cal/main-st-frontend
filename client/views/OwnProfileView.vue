@@ -12,8 +12,8 @@ const numFollowers = ref(0);
 const numFollowing = ref(0);
 
 onBeforeMount(async () => {
-  numFollowers.value = (await fetchy(`/api/users/${currentUsername}/followers`, "GET")).length;
-  numFollowing.value = (await fetchy(`/api/friends/${currentUsername}`, "GET")).length;
+  numFollowers.value = (await fetchy(`/api/users/${currentUsername.value}/followers`, "GET")).length;
+  numFollowing.value = (await fetchy(`/api/friends/${currentUsername.value}`, "GET")).length;
 });
 </script>
 
@@ -34,6 +34,7 @@ onBeforeMount(async () => {
     <div class="flex center">
       <EditTagsComponent :username="currentUsername" />
     </div>
+    <hr color="#1c5753" />
     <PostListComponent :own="true" />
   </main>
 </template>
@@ -41,6 +42,10 @@ onBeforeMount(async () => {
 <style scoped>
 h1 {
   text-align: center;
+}
+
+hr {
+  margin: 48px 0;
 }
 
 .outer {

@@ -38,10 +38,6 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-.active {
-  /* background-color: gold; */
-}
-
 button {
   height: 28px;
   width: 28px;
